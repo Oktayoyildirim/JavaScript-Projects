@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Conditions and Vehicles</title>
+    <script>
+        // A function using a ternary operator to determine if it's safe to go outside based on temperature
+        function Check_Weather_Function() {
+            var Temperature = document.getElementById("Temperature").value;
+            var WeatherMessage = Temperature < 10 ? "It's too cold!" : "The weather is fine!";
+            document.getElementById("WeatherResult").innerHTML = WeatherMessage + " to go outside.";
+        }
+
+        // A constructor function utilizing "new" and "this" keywords
+        function Car(Brand, Model, Year, Color) {
+            this.Car_Brand = Brand;
+            this.Car_Model = Model;
+            this.Car_Year = Year;
+            this.Car_Color = Color;
+        }
+
+        var Alice = new Car("Toyota", "Corolla", 2021, "Blue");
+        var Bob = new Car("Tesla", "Model 3", 2022, "Black");
+        var Charlie = new Car("Honda", "Civic", 2018, "Gray");
+
+        // A function to display the results of the constructor in an HTML element
+        function showVehicleInfo() {
+            document.getElementById("VehicleInfo").innerHTML =
+                "Bob drives a " + Bob.Car_Color + " " + Bob.Car_Brand + " " + Bob.Car_Model +
+                " from " + Bob.Car_Year + ".";
+        }
+
+        // A nested function to concatenate words
+        function concatenateWords() {
+            var baseString = "Good";
+            function addWord(word) {
+                baseString = baseString + " " + word;
+            }
+            addWord("Morning");
+            document.getElementById("WordConcat").innerHTML = baseString;
+        }
+    </script>
+</head>
+<body>
+    <!-- Getting input from user and calling Check_Weather_Function() -->
+    <p>Enter the current temperature to check if it's safe to go outside:</p>
+    <input id="Temperature" value="0" />
+    <button onclick="Check_Weather_Function()">Check Weather</button>
+    <p id="WeatherResult"></p>
+
+    <!-- Calling showVehicleInfo() -->
+    <button onclick="showVehicleInfo()">Show Vehicle Information</button>
+    <p id="VehicleInfo"></p>
+
+    <!-- Calling the nested function concatenateWords() -->
+    <p id="WordConcat" onclick="concatenateWords()">Click to Combine Words</p>
+</body>
+</html>
+
