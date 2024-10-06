@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Game</title>
+    <style>
+        .center-container {
+            width: 608px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-style: hidden;
+        }
+
+        td {
+            cursor: pointer;
+            border: 4px solid rgba(3, 252, 127, 0.9);
+            padding: 0px;
+            width: 200px;
+            height: 200px;
+            filter: contrast(3);
+        }
+
+        canvas {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body id="body">
+    <div class="center-container">
+        <h1>Tic Tac Toe</h1>
+        <canvas id="win-lines" width="608" height="608"></canvas>
+        <table>
+            <tr>
+                <td id="0" onclick="placeXorO(0)"></td>
+                <td id="1" onclick="placeXorO(1)"></td>
+                <td id="2" onclick="placeXorO(2)"></td>
+            </tr>
+            <tr>
+                <td id="3" onclick="placeXorO(3)"></td>
+                <td id="4" onclick="placeXorO(4)"></td>
+                <td id="5" onclick="placeXorO(5)"></td>
+            </tr>
+            <tr>
+                <td id="6" onclick="placeXorO(6)"></td>
+                <td id="7" onclick="placeXorO(7)"></td>
+                <td id="8" onclick="placeXorO(8)"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        // Variable to keep track of whose turn it is (X or O)
+        let activePlayer = 'X';
+        // Array to store moves made by both players
+        let selectedSquares = [];
+
+        // Function to place X or O in a square
+        function placeXorO(squareNumber) {
+            // Check if the square has already been selected
+            if (!selectedSquares.some(element => element.includes(squareNumber))) {
+                // Get the clicked square element
+                let select = document.getElementById(squareNumber);
+
+                // Place 'X' or 'O' depending on active player
+                if (activePlayer === 'X') {
+                    select.style.backgroundImage = 'url("images/x.png")';
+                } else {
+                    select.style.backgroundImage = 'url("images/o.png")';
+                }
+
+                // Add the square number and player to the selectedSquares array
+                selectedSquares.push(squareNumber + activePlayer);
+
+                // Check for a win or tie
+                checkWinConditions();
+
+                // Switch the active player for the next turn
+                activePlayer = (activePlayer === 'X') ? 'O' : 'X';
+
+                // Play placement sound
+                audio('./media/place.mp3');
+
+                // If it's the computer's turn (O), disable clicks and make a random move
+                if (activePlayer === 'O') {
+                    disableClick();
+                    setTimeout(function () { computerTurn(); }, 1000);
+                }
+                return true;
+            }
+        }
+
+        // Function to simulate the computer's move (randomly chooses an empty square)
+        function computerTurn() {
+            let success = false;
+            let pickASquare;
+            while (!success) {
+                // Pick a random square number
+                pickASquare = String(Math.floor(Math.random() * 9));
+                if (placeXorO(pickASquare)) {
+                    success = true;
+                }
+            }
+        }
+
+        // Function to check win conditions after every move
+        function checkWinConditions() {
+            const winConditions = [
+                ['0X', '1X', '2X'], ['3X', '4X', '5X'], ['6X', '7X', '8X'], // Rows
+                ['0X', '3X', '6X'], ['1X', '4X', '7X'], ['2X', '5X', '8X'], // Columns
+                ['0X', '4X', '8X'], ['2X', '4X', '6X']                     // Diagonals
+            ];
+
+            // Check if any win condition is met
+            for (let condition of winConditions) {
+                if (condition.every(value => selectedSquares.includes(value))) {
+                    drawWinLine(condition); // Draw the winning line
+                    return;
+                }
+            }
+
+            // If all squares are filled and no one wins, it's a tie
+            if (selectedSquares.length >= 9) {
+                audio('./media/tie.mp3'); // Play tie sound
+                setTimeout(resetGame, 500); // Reset the game
+            }
+        }
+
+        // Function to reset the game
+        function resetGame() {
+            // Clear all the squares
+            for (let i = 0; i < 9; i++) {
+                let square = document.getElementById(String(i));
+                square.style.backgroundImage = ''; // Remove any X or O images
+            }
+            selectedSquares = []; // Clear the array for a fresh start
+        }
+
+        // Function to play audio
+        function audio(audioURL) {
+            let audio = new Audio(audioURL);
+            audio.play();
+        }
+
+        // Function to disable clicks during the computer's turn
+        function disableClick() {
+            document.body.style.pointerEvents = 'none'; // Disable clicks
+            setTimeout(function () { document.body.style.pointerEvents = 'auto'; }, 1000); // Re-enable clicks after 1 second
+        }
+
+        // Function to draw a line when someone wins (you can implement this as needed)
+        function drawWinLine(condition) {
+            // You can create a line-drawing function here to highlight the winning squares
+            console.log("Draw winning line for condition:", condition);
+        }
+    </script>
+</body>
+</html>
+
